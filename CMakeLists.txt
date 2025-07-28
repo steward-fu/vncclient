@@ -621,6 +621,11 @@ set(LIBVNCCLIENT_EXAMPLES
     ppmtest
 )
 
+set(LIBVNCCLIENT_EXAMPLES
+    ${LIBVNCCLIENT_EXAMPLES}
+    vncclient
+)
+
 if(SDL2_FOUND)
   include_directories(${SDL2_INCLUDE_DIR})
   set(LIBVNCCLIENT_EXAMPLES
