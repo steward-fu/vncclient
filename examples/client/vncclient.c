@@ -216,14 +216,20 @@ static rfbKeySym key2rfbKeySym(int key, int val)
         }
 
         return XK_KP_1;
-
-    case KEY_2:             return shift ? XK_at : XK_KP_2;
-    case KEY_3:             return shift ? XK_numbersign : XK_KP_3;
-    case KEY_4:             return shift ? XK_dollar : XK_KP_4;
-    case KEY_5:             return shift ? XK_percent : XK_KP_5;
-    case KEY_6:             return shift ? XK_asciicircum : XK_KP_6;
-    case KEY_7:             return shift ? XK_ampersand : XK_KP_7;
-    case KEY_8:             return shift ? XK_asterisk : XK_KP_8;
+    case KEY_2:
+        return shift ? XK_at : XK_KP_2;
+    case KEY_3:
+        return shift ? XK_numbersign : XK_KP_3;
+    case KEY_4:
+        return shift ? XK_dollar : XK_KP_4;
+    case KEY_5:
+        return shift ? XK_percent : XK_KP_5;
+    case KEY_6:
+        return shift ? XK_asciicircum : XK_KP_6;
+    case KEY_7:
+        return shift ? XK_ampersand : XK_KP_7;
+    case KEY_8:
+        return shift ? XK_asterisk : XK_KP_8;
     case KEY_9:
         if (shift) {
             return XK_parenleft;
@@ -234,7 +240,6 @@ static rfbKeySym key2rfbKeySym(int key, int val)
         }
 
         return XK_KP_9;
-
     case KEY_0:
         if (shift) {
             return XK_parenright;
@@ -245,44 +250,50 @@ static rfbKeySym key2rfbKeySym(int key, int val)
         }
 
         return XK_KP_0;
-
-    case KEY_F1:            return XK_F1;
-    case KEY_F2:            return XK_F2;
-    case KEY_F3:            return XK_F3;
-    case KEY_F4:            return XK_F4;
-    case KEY_F5:            return XK_F5;
-    case KEY_F6:            return XK_F6;
-    case KEY_F7:            return XK_F7;
-    case KEY_F8:            return XK_F8;
-    case KEY_F9:            return XK_F9;
-    case KEY_F10:           return XK_F10;
-    case KEY_F11:           return XK_F11;
-    case KEY_F12:           return XK_F12;
-
-    case KEY_A:             return shift ? XK_A : XK_a;
-    case KEY_B:             return shift ? XK_B : XK_b;
-    case KEY_C:             return shift ? XK_C : XK_c;
-    case KEY_D:             return shift ? XK_D : XK_d;
-    case KEY_E:             return shift ? XK_E : XK_e;
-    case KEY_F:             return shift ? XK_F : XK_f;
-    case KEY_G:             return shift ? XK_G : XK_g;
-    case KEY_H:             return shift ? XK_H : XK_h;
-    case KEY_I:             return shift ? XK_I : XK_i;
-    case KEY_J:             return shift ? XK_J : XK_j;
-
+    case KEY_A:
+        return shift ? XK_A : XK_a;
+    case KEY_B:
+        return shift ? XK_B : XK_b;
+    case KEY_C:
+        return shift ? XK_C : XK_c;
+    case KEY_D:
+        return shift ? XK_D : XK_d;
+    case KEY_E:
+        return shift ? XK_E : XK_e;
+    case KEY_F:
+        return shift ? XK_F : XK_f;
+    case KEY_G:
+        return shift ? XK_G : XK_g;
+    case KEY_H:
+        return shift ? XK_H : XK_h;
+    case KEY_I:
+        return shift ? XK_I : XK_i;
+    case KEY_J:
+        return shift ? XK_J : XK_j;
     case KEY_K:
         if (shift) {
             return XK_K;
+        }
+
+        if (alt) {
+            SendPointerEvent(cl, tp[0].x, tp[0].y, val ? rfbButton1Mask : 0);
+            return 0;
         }
         return XK_k;
     case KEY_L:
         if (shift) {
             return XK_L;
         }
-        return XK_l;
-    case KEY_M:             return shift ? XK_M : XK_m;
-    case KEY_N:             return shift ? XK_N : XK_n;
 
+        if (alt) {
+            SendPointerEvent(cl, tp[0].x, tp[0].y, val ? rfbButton3Mask : 0);
+            return 0;
+        }
+        return XK_l;
+    case KEY_M:
+        return shift ? XK_M : XK_m;
+    case KEY_N:
+        return shift ? XK_N : XK_n;
     case KEY_O:
         if (shift) {
             return XK_O;
@@ -293,7 +304,6 @@ static rfbKeySym key2rfbKeySym(int key, int val)
         }
 
         return XK_o;
-
     case KEY_P:
         if (shift) {
             return XK_P;
@@ -304,52 +314,46 @@ static rfbKeySym key2rfbKeySym(int key, int val)
         }
 
         return XK_p;
-
-    case KEY_Q:             return shift ? XK_Q : XK_q;
-    case KEY_R:             return shift ? XK_R : XK_r;
-    case KEY_S:             return shift ? XK_S : XK_s;
-    case KEY_T:             return shift ? XK_T : XK_t;
-    case KEY_U:             return shift ? XK_U : XK_u;
-    case KEY_V:             return shift ? XK_V : XK_v;
-    case KEY_W:             return shift ? XK_W : XK_w;
-    case KEY_X:             return shift ? XK_X : XK_x;
-    case KEY_Y:             return shift ? XK_Y : XK_y;
-    case KEY_Z:             return shift ? XK_Z : XK_z;
-
+    case KEY_Q:
+        return shift ? XK_Q : XK_q;
+    case KEY_R:
+        return shift ? XK_R : XK_r;
+    case KEY_S:
+        return shift ? XK_S : XK_s;
+    case KEY_T:
+        return shift ? XK_T : XK_t;
+    case KEY_U:
+        return shift ? XK_U : XK_u;
+    case KEY_V:
+        return shift ? XK_V : XK_v;
+    case KEY_W:
+        return shift ? XK_W : XK_w;
+    case KEY_X:
+        return shift ? XK_X : XK_x;
+    case KEY_Y:
+        return shift ? XK_Y : XK_y;
+    case KEY_Z:
+        return shift ? XK_Z : XK_z;
     case KEY_UP:
         if (shift) {
-            debug("Send page_up\n");
             return XK_Page_Up;
         }
         return XK_Up;
     case KEY_DOWN:
         if (shift) {
-            debug("Send page_down\n");
             return XK_Page_Down;
 
         }
         return XK_Down;
     case KEY_RIGHT:
         if (shift) {
-            debug("Send begin\n");
             return XK_Begin;
-        }
-
-        if (alt) {
-            debug("Mouse Right button=%d\n", val);
-            SendPointerEvent(cl, tp[0].x, tp[0].y, val ? rfbButton3Mask : 0);
         }
 
         return XK_Right;
     case KEY_LEFT:
         if (shift) {
-            debug("Send end\n");
             return XK_End;
-        }
-
-        if (alt) {
-            debug("Mouse Left button=%d\n", val);
-            SendPointerEvent(cl, tp[0].x, tp[0].y, val ? rfbButton1Mask : 0);
         }
 
         return XK_Left;
@@ -396,10 +400,8 @@ static rfbKeySym key2rfbKeySym(int key, int val)
         }
 
         return XK_minus;
-
     case KEY_EQUAL:
         return shift ? XK_plus : XK_equal;
-
     case KEY_SLASH:
         if (shift) {
             return XK_question;
@@ -410,14 +412,11 @@ static rfbKeySym key2rfbKeySym(int key, int val)
         }
 
         return XK_slash;
-
     case KEY_LEFTSHIFT:
         return XK_Control_L;
-
     case KEY_RIGHTALT:
         alt = val;
         break;
-
     case KEY_LEFTCTRL:
     case KEY_CAPSLOCK:
         shift = val;
@@ -687,7 +686,7 @@ static void* draw_handler(void* pParam)
     return NULL;
 }
 
-static rfbBool resize(rfbClient* client)
+static rfbBool vnc_resize(rfbClient *client)
 {
     debug("%s()\n", __func__);
     client->width = SCREEN_W;
@@ -705,79 +704,23 @@ static rfbBool resize(rfbClient* client)
     return TRUE;
 }
 
-static void update(rfbClient* cl, int x, int y, int w, int h)
+static void vnc_update(rfbClient *cl, int x, int y, int w, int h)
 {
     wl.flip = 1;
 }
 
-static rfbCredential *get_credential(rfbClient *cl, int credentialType)
-{
-    rfbCredential *c = malloc(sizeof(rfbCredential));
-    if (!c) {
-        return NULL;
-    }
-
-    c->userCredential.username = malloc(RFB_BUF_SIZE);
-    if (!c->userCredential.username) {
-        free(c);
-        return NULL;
-    }
-
-    c->userCredential.password = malloc(RFB_BUF_SIZE);
-    if (!c->userCredential.password) {
-        free(c->userCredential.username);
-        free(c);
-        return NULL;
-    }
-
-    if (credentialType != rfbCredentialTypeUser) {
-        debug("something else than username and password required for authentication\n");
-        return NULL;
-    }
-
-    debug("username and password required for authentication!\n");
-    printf("user: ");
-    fgets(c->userCredential.username, RFB_BUF_SIZE, stdin);
-    printf("pass: ");
-    fgets(c->userCredential.password, RFB_BUF_SIZE, stdin);
-
-    c->userCredential.username[strcspn(c->userCredential.username, "\n")] = 0;
-    c->userCredential.password[strcspn(c->userCredential.password, "\n")] = 0;
-
-    return c;
-}
-
-static void cleanup(rfbClient* cl)
+static void vnc_cleanup(rfbClient *cl)
 {
     if (cl) {
         rfbClientCleanup(cl);
     }
 }
 
-static void kbd_leds(rfbClient* cl, int value, int pad)
+char* vnc_password(rfbClient *client)
 {
-    fprintf(stderr,"Led State= 0x%02X\n", value);
-    fflush(stderr);
-}
+    debug("%s()\n", __func__);
 
-static void text_chat(rfbClient* cl, int value, char *text)
-{
-    switch(value) {
-    case rfbTextChatOpen:
-        fprintf(stderr,"TextChat: We should open a textchat window!\n");
-        TextChatOpen(cl);
-        break;
-    case rfbTextChatClose:
-        fprintf(stderr,"TextChat: We should close our window!\n");
-        break;
-    case rfbTextChatFinished:
-        fprintf(stderr,"TextChat: We should close our window!\n");
-        break;
-    default:
-        fprintf(stderr,"TextChat: Received \"%s\"\n", text);
-        break;
-    }
-    fflush(stderr);
+    return strdup("xxxxxxxx");
 }
 
 int main(int argc, char *argv[])
@@ -787,7 +730,7 @@ int main(int argc, char *argv[])
     debug("%s\n", __func__);
 
     if (argc != 2) {
-        debug("Usage:\n  %s server_ip:server_port\n", argv[0]);
+        printf("Usage:\n  %s ip:port\n", argv[0]);
         return -1;
     }
 
@@ -816,17 +759,14 @@ int main(int argc, char *argv[])
     }
 
     cl = rfbGetClient(8, 3, 4);
-    cl->MallocFrameBuffer = resize;
+    cl->MallocFrameBuffer = vnc_resize;
     cl->canHandleNewFBSize = TRUE;
-    cl->GotFrameBufferUpdate = update;
-    cl->HandleKeyboardLedState = kbd_leds;
-    cl->HandleTextChat = text_chat;
-    cl->GetCredential = get_credential;
+    cl->GotFrameBufferUpdate = vnc_update;
+    cl->GetPassword = vnc_password;
     cl->listenPort = LISTEN_PORT_OFFSET;
     cl->listen6Port = LISTEN_PORT_OFFSET;
-
     if (!rfbInitClient(cl, &argc, argv)) {
-        cleanup(cl);
+        vnc_cleanup(cl);
         return -1;
     }
 
@@ -834,13 +774,11 @@ int main(int argc, char *argv[])
     while (1) {
         r = WaitForMessage(cl, 500);
         if (r < 0) {
-            cleanup(cl);
             break;
         }
 
         if (r) {
             if (!HandleRFBServerMessage(cl)) {
-                cleanup(cl);
                 break;
             }
         }
@@ -854,6 +792,7 @@ int main(int argc, char *argv[])
             eglSwapBuffers(wl.egl.display, wl.egl.surface);
         }
     }
+    vnc_cleanup(cl);
 
     debug("exit...\n");
     wl.thread.running = 0;

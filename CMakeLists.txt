@@ -541,6 +541,10 @@ if(WIN32)
 endif(WIN32)
 
 target_link_libraries(vncclient
+    wayland-client
+    wayland-egl
+    EGL
+    GLESv2
                       ${ADDITIONAL_LIBS}
                       ${ZLIB_LIBRARIES}
                       ${LZO_LIBRARIES}
