@@ -428,6 +428,8 @@ static rfbKeySym key2rfbKeySym(int key, int val)
 
 static void* input_handler(void* pParam)
 {
+    static int rcnt = 0;
+
     int r = 0;
     int tp_id = 0;
     int tp_valid = 0;
@@ -489,9 +491,16 @@ static void* input_handler(void* pParam)
                 if ((ev.code == ABS_Z) && (ev.value == 0)) {
                     if (tp_valid) {
                         tp_valid = 0;
+                        rcnt = 0;
 
-                        SendPointerEvent(cl, tp[0].x, tp[0].y, 0);
+                        SendPointerEvent(cl, tp[0].x, tp[0].y, !alt ? rfbButton1Mask : 0);
                         debug("Touch ID=%d, X=%d, Y=%d, Pressure=%d\n", tp_id, tp[tp_id].x, tp[tp_id].y, tp[tp_id].pressure);
+                    }
+                }
+                else {
+                    rcnt += 1;
+                    if ((rcnt == 2) && !alt) {
+                        SendPointerEvent(cl, tp[0].x, tp[0].y, 0);
                     }
                 }
             }
