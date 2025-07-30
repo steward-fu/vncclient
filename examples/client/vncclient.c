@@ -27,8 +27,16 @@
 #define LCD_H       960
 #define SCREEN_W    960
 #define SCREEN_H    540
+
+#if defined(XT894)
+#define TP_PATH     "/dev/input/event4"
+#define KEY_PATH    "/dev/input/event3"
+#endif
+
+#if defined(XT897)
 #define TP_PATH     "/dev/input/event7"
 #define KEY_PATH    "/dev/input/event1"
+#endif
 
 #if DEBUG
     #define debug(...) printf("[VNC] "__VA_ARGS__)
@@ -414,6 +422,7 @@ static rfbKeySym key2rfbKeySym(int key, int val)
         return XK_slash;
     case KEY_LEFTSHIFT:
         return XK_Control_L;
+    case KEY_LEFTALT:
     case KEY_RIGHTALT:
         alt = val;
         break;

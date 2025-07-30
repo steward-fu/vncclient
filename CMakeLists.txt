@@ -76,7 +76,8 @@ option(WITH_XCB "Build with XCB support" ON)
 option(WITH_EXAMPLES "Build examples" ON)
 option(WITH_TESTS "Build tests" ON)
 option(WITH_QT "Build the Qt client example" ON)
-
+option(XT894 "SailfishOS XT894" OFF)
+option(XT897 "SailfishOS XT897" ON)
 
 if(WITH_ZLIB)
   find_package(ZLIB)
@@ -539,6 +540,16 @@ if(WIN32)
     add_definitions(-D_WIN32_WINNT=0x0600)
   endif(WITH_TIGHTVNC_FILETRANSFER)
 endif(WIN32)
+
+if(XT894)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAG} -DXT894")
+set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAG} -DXT894")
+endif(XT894)
+
+if(XT897)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAG} -DXT897")
+set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAG} -DXT897")
+endif(XT897)
 
 target_link_libraries(vncclient
     wayland-client
