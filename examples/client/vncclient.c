@@ -101,8 +101,19 @@ typedef struct {
     uint32_t *pixels[MAX_FB];
 } wayland;
 
-static int alt = 0;
-static int shift = 0;
+typedef struct {
+    int alt;
+    int shift;
+    struct {
+        int up;
+        int down;
+        int left;
+        int right;
+        int press;
+    } mouse;
+} myevent;
+
+static myevent evt = { 0 };
 static wayland wl = { 0 };
 static rfbClient *cl = NULL;
 static sfos_filter_t filter = 0;
@@ -211,184 +222,238 @@ static void* display_handler(void* pParam)
     return NULL;
 }
 
+static int send_tp_event_by_offset(int addx, int addy)
+{
+    tp[0].x += addx;
+    tp[0].y += addy;
+
+    if (tp[0].x < 0) {
+        tp[0].x = 0;
+    }
+    if (tp[0].x >= SCREEN_W) {
+        tp[0].x = SCREEN_W - 1;
+    }
+
+    if (tp[0].y < 0) {
+        tp[0].y = 0;
+    }
+    if (tp[0].y >= SCREEN_H) {
+        tp[0].y = SCREEN_H - 1;
+    }
+
+    SendPointerEvent(cl, tp[0].x, tp[0].y, evt.mouse.press ? rfbButton1Mask : 0);
+    return 0;
+}
+
 static rfbKeySym key2rfbKeySym(int key, int val)
 {
     switch (key) {
     case KEY_1:
-        if (shift) {
+        if (evt.shift) {
             return XK_exclam;
         }
 
-        if (alt) {
+        if (evt.alt) {
+            SendKeyEvent(cl, XK_Alt_L, 0);
             return XK_bar;
         }
 
         return XK_KP_1;
     case KEY_2:
-        return shift ? XK_at : XK_KP_2;
+        return evt.shift ? XK_at : XK_KP_2;
     case KEY_3:
-        return shift ? XK_numbersign : XK_KP_3;
+        return evt.shift ? XK_numbersign : XK_KP_3;
     case KEY_4:
-        return shift ? XK_dollar : XK_KP_4;
+        return evt.shift ? XK_dollar : XK_KP_4;
     case KEY_5:
-        return shift ? XK_percent : XK_KP_5;
+        return evt.shift ? XK_percent : XK_KP_5;
     case KEY_6:
-        return shift ? XK_asciicircum : XK_KP_6;
+        return evt.shift ? XK_asciicircum : XK_KP_6;
     case KEY_7:
-        return shift ? XK_ampersand : XK_KP_7;
+        return evt.shift ? XK_ampersand : XK_KP_7;
     case KEY_8:
-        return shift ? XK_asterisk : XK_KP_8;
+        return evt.shift ? XK_asterisk : XK_KP_8;
     case KEY_9:
-        if (shift) {
+        if (evt.shift) {
             return XK_parenleft;
         }
 
-        if (alt) {
+        if (evt.alt) {
+            SendKeyEvent(cl, XK_Alt_L, 0);
             return XK_braceleft;
         }
 
         return XK_KP_9;
     case KEY_0:
-        if (shift) {
+        if (evt.shift) {
             return XK_parenright;
         }
 
-        if (alt) {
+        if (evt.alt) {
+            SendKeyEvent(cl, XK_Alt_L, 0);
             return XK_braceright;
         }
 
         return XK_KP_0;
     case KEY_A:
-        return shift ? XK_A : XK_a;
+        return evt.shift ? XK_A : XK_a;
     case KEY_B:
-        return shift ? XK_B : XK_b;
+        return evt.shift ? XK_B : XK_b;
     case KEY_C:
-        return shift ? XK_C : XK_c;
+        return evt.shift ? XK_C : XK_c;
     case KEY_D:
-        return shift ? XK_D : XK_d;
+        return evt.shift ? XK_D : XK_d;
     case KEY_E:
-        return shift ? XK_E : XK_e;
+        return evt.shift ? XK_E : XK_e;
     case KEY_F:
-        return shift ? XK_F : XK_f;
+        return evt.shift ? XK_F : XK_f;
     case KEY_G:
-        return shift ? XK_G : XK_g;
+        return evt.shift ? XK_G : XK_g;
     case KEY_H:
-        return shift ? XK_H : XK_h;
+        return evt.shift ? XK_H : XK_h;
     case KEY_I:
-        return shift ? XK_I : XK_i;
+        return evt.shift ? XK_I : XK_i;
     case KEY_J:
-        return shift ? XK_J : XK_j;
+        return evt.shift ? XK_J : XK_j;
     case KEY_K:
-        if (shift) {
+        if (evt.shift) {
             return XK_K;
         }
 
-        if (alt) {
-            SendPointerEvent(cl, tp[0].x, tp[0].y, val ? rfbButton1Mask : 0);
+        if (evt.alt && val) {
+            SendKeyEvent(cl, XK_Alt_L, 0);
+
+            evt.mouse.press ^= 1;
+            send_tp_event_by_offset(0, 0);
             return 0;
         }
         return XK_k;
     case KEY_L:
-        if (shift) {
+        if (evt.shift) {
             return XK_L;
         }
 
-        if (alt) {
+        if (evt.alt) {
+            SendKeyEvent(cl, XK_Alt_L, 0);
             SendPointerEvent(cl, tp[0].x, tp[0].y, val ? rfbButton3Mask : 0);
             return 0;
         }
         return XK_l;
     case KEY_M:
-        return shift ? XK_M : XK_m;
+        return evt.shift ? XK_M : XK_m;
     case KEY_N:
-        return shift ? XK_N : XK_n;
+        return evt.shift ? XK_N : XK_n;
     case KEY_O:
-        if (shift) {
+        if (evt.shift) {
             return XK_O;
         }
 
-        if (alt) {
+        if (evt.alt) {
+            SendKeyEvent(cl, XK_Alt_L, 0);
             return XK_bracketleft;
         }
 
         return XK_o;
     case KEY_P:
-        if (shift) {
+        if (evt.shift) {
             return XK_P;
         }
 
-        if (alt) {
+        if (evt.alt) {
+            SendKeyEvent(cl, XK_Alt_L, 0);
             return XK_bracketright;
         }
 
         return XK_p;
     case KEY_Q:
-        return shift ? XK_Q : XK_q;
+        return evt.shift ? XK_Q : XK_q;
     case KEY_R:
-        return shift ? XK_R : XK_r;
+        return evt.shift ? XK_R : XK_r;
     case KEY_S:
-        return shift ? XK_S : XK_s;
+        return evt.shift ? XK_S : XK_s;
     case KEY_T:
-        return shift ? XK_T : XK_t;
+        return evt.shift ? XK_T : XK_t;
     case KEY_U:
-        return shift ? XK_U : XK_u;
+        return evt.shift ? XK_U : XK_u;
     case KEY_V:
-        return shift ? XK_V : XK_v;
+        return evt.shift ? XK_V : XK_v;
     case KEY_W:
-        return shift ? XK_W : XK_w;
+        return evt.shift ? XK_W : XK_w;
     case KEY_X:
-        return shift ? XK_X : XK_x;
+        return evt.shift ? XK_X : XK_x;
     case KEY_Y:
-        return shift ? XK_Y : XK_y;
+        return evt.shift ? XK_Y : XK_y;
     case KEY_Z:
-        return shift ? XK_Z : XK_z;
+        return evt.shift ? XK_Z : XK_z;
     case KEY_UP:
-        if (shift) {
+        if (evt.shift) {
             return XK_Page_Up;
+        }
+        if (evt.alt) {
+            evt.mouse.up ^= 1;
+            SendKeyEvent(cl, XK_Alt_L, 0);
+            return 0;
         }
         return XK_Up;
     case KEY_DOWN:
-        if (shift) {
+        if (evt.shift) {
             return XK_Page_Down;
 
         }
+        if (evt.alt) {
+            evt.mouse.down ^= 1;
+            SendKeyEvent(cl, XK_Alt_L, 0);
+            return 0;
+        }
         return XK_Down;
     case KEY_RIGHT:
-        if (shift) {
+        if (evt.shift) {
             return XK_Begin;
+        }
+        if (evt.alt) {
+            evt.mouse.right ^= 1;
+            SendKeyEvent(cl, XK_Alt_L, 0);
+            return 0;
         }
 
         return XK_Right;
     case KEY_LEFT:
-        if (shift) {
+        if (evt.shift) {
             return XK_End;
+        }
+        if (evt.alt) {
+            evt.mouse.left ^= 1;
+            SendKeyEvent(cl, XK_Alt_L, 0);
+            return 0;
         }
 
         return XK_Left;
     case KEY_ENTER:
-        return XK_KP_Enter;
+        return evt.shift ? XK_Escape : XK_KP_Enter;
     case KEY_BACKSPACE:
         return XK_BackSpace;
     case KEY_TAB:
         return XK_Tab;
     case KEY_COMMA:
-        if (shift) {
+        if (evt.shift) {
             return XK_semicolon;
 
         }
 
-        if (alt) {
+        if (evt.alt) {
+            SendKeyEvent(cl, XK_Alt_L, 0);
             return XK_less;
         }
 
         return XK_comma;
 
     case KEY_DOT:
-        if (shift) {
+        if (evt.shift) {
             return XK_colon;
         }
 
-        if (alt) {
+        if (evt.alt) {
+            SendKeyEvent(cl, XK_Alt_L, 0);
             return XK_greater;
         }
 
@@ -397,25 +462,27 @@ static rfbKeySym key2rfbKeySym(int key, int val)
     case KEY_SPACE:
         return XK_space;
     case KEY_GRAVE:
-        return shift ? XK_quotedbl : XK_apostrophe;
+        return evt.shift ? XK_quotedbl : XK_apostrophe;
     case KEY_MINUS:
-        if (shift) {
+        if (evt.shift) {
             return XK_underscore;
         }
 
-        if (alt) {
+        if (evt.alt) {
+            SendKeyEvent(cl, XK_Alt_L, 0);
             return XK_asciitilde;
         }
 
         return XK_minus;
     case KEY_EQUAL:
-        return shift ? XK_plus : XK_equal;
+        return evt.shift ? XK_plus : XK_equal;
     case KEY_SLASH:
-        if (shift) {
+        if (evt.shift) {
             return XK_question;
         }
 
-        if (alt) {
+        if (evt.alt) {
+            SendKeyEvent(cl, XK_Alt_L, 0);
             return XK_backslash;
         }
 
@@ -424,11 +491,11 @@ static rfbKeySym key2rfbKeySym(int key, int val)
         return XK_Control_L;
     case KEY_LEFTALT:
     case KEY_RIGHTALT:
-        alt = val;
-        break;
+        evt.alt = val;
+        return XK_Alt_L;
     case KEY_LEFTCTRL:
     case KEY_CAPSLOCK:
-        shift = val;
+        evt.shift = val;
         return XK_Shift_L;
     }
 
@@ -437,8 +504,6 @@ static rfbKeySym key2rfbKeySym(int key, int val)
 
 static void* input_handler(void* pParam)
 {
-    static int rcnt = 0;
-
     int r = 0;
     int tp_id = 0;
     int tp_valid = 0;
@@ -466,18 +531,19 @@ static void* input_handler(void* pParam)
 
     while (wl.thread.running) {
         if (read(fd[0], &ev, sizeof(struct input_event)) > 0) {
-            if (ev.type == EV_KEY) {
-                debug("Key, code:%d, value:%d\n", ev.code, ev.value);
+            debug("Key, code:%d, value:%d\n", ev.code, ev.value);
 
+            if (ev.type == EV_KEY) {
                 r = key2rfbKeySym(ev.code, ev.value);
                 if (r > 0) {
-                    debug("Send key %d=%d\n", r, !!ev.value);
                     SendKeyEvent(cl, r, !!ev.value);
                 }
             }
         }
 
         if (read(fd[1], &ev, sizeof(struct input_event)) > 0) {
+            debug("Touch, code:%d, value:%d\n", ev.code, ev.value);
+
             if (ev.type == EV_ABS) {
                 if (ev.code == ABS_MT_TRACKING_ID) {
                     tp_valid = 1;
@@ -500,19 +566,39 @@ static void* input_handler(void* pParam)
                 if ((ev.code == ABS_Z) && (ev.value == 0)) {
                     if (tp_valid) {
                         tp_valid = 0;
-                        rcnt = 0;
+                        SendPointerEvent(cl, tp[0].x, tp[0].y, !evt.alt ? rfbButton1Mask : 0);
 
-                        SendPointerEvent(cl, tp[0].x, tp[0].y, !alt ? rfbButton1Mask : 0);
-                        debug("Touch ID=%d, X=%d, Y=%d, Pressure=%d\n", tp_id, tp[tp_id].x, tp[tp_id].y, tp[tp_id].pressure);
+                        debug(
+                            "Touch ID=%d, X=%d, Y=%d, Pressure=%d\n",
+                            tp_id,
+                            tp[tp_id].x,
+                            tp[tp_id].y,
+                            tp[tp_id].pressure
+                        );
                     }
-                }
-                else {
-                    rcnt += 1;
-                    if ((rcnt == 2) && !alt) {
+                    else {
+                        evt.mouse.press = 0;
                         SendPointerEvent(cl, tp[0].x, tp[0].y, 0);
                     }
                 }
             }
+        }
+
+        if (evt.mouse.up) {
+            send_tp_event_by_offset(0, -1);
+            usleep(3000);
+        }
+        if (evt.mouse.down) {
+            send_tp_event_by_offset(0, 1);
+            usleep(3000);
+        }
+        if (evt.mouse.left) {
+            send_tp_event_by_offset(-1, 0);
+            usleep(3000);
+        }
+        if (evt.mouse.right) {
+            send_tp_event_by_offset(1, 0);
+            usleep(3000);
         }
 
         usleep(1000);
