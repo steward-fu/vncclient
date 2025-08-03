@@ -6,6 +6,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <time.h>
 #include <sys/mman.h>
 #include <linux/input.h>
 
@@ -185,6 +186,17 @@ static const char *frag_shader_code =
     "    tex = texture2D(frag_sampler, tc).bgr;                         \n"
     "    gl_FragColor = vec4(tex, 1.0);                                 \n"
     "}                                                                  \n";
+
+static uint32_t get_tick(void)
+{
+    struct timespec ts = { 0 };
+    unsigned tick = 0;
+
+    clock_gettime(CLOCK_REALTIME, &ts);
+    tick = ts.tv_nsec / 1000000;
+    tick += ts.tv_sec * 1000;
+    return tick;
+}
 
 static void cb_handle(void* dat, struct wl_registry* reg, uint32_t id, const char* intf, uint32_t ver)
 {
@@ -504,9 +516,13 @@ static rfbKeySym key2rfbKeySym(int key, int val)
 
 static void* input_handler(void* pParam)
 {
-    int r = 0;
+    uint32_t stime = 0;
+
     int tp_id = 0;
     int tp_valid = 0;
+    int key_val = 0;
+    int key_code = 0;
+    int key_stage = 0;
     int fd[2] = { -1, -1 };
     struct input_event ev = { 0 };
     const char *tp_path = TP_PATH;
@@ -529,14 +545,19 @@ static void* input_handler(void* pParam)
     fcntl(fd[0], F_SETFL, O_NONBLOCK);
     fcntl(fd[1], F_SETFL, O_NONBLOCK);
 
+    stime = get_tick();
     while (wl.thread.running) {
         if (read(fd[0], &ev, sizeof(struct input_event)) > 0) {
             debug("Key, code:%d, value:%d\n", ev.code, ev.value);
 
             if (ev.type == EV_KEY) {
-                r = key2rfbKeySym(ev.code, ev.value);
-                if (r > 0) {
-                    SendKeyEvent(cl, r, !!ev.value);
+                key_code = key2rfbKeySym(ev.code, ev.value);
+                if (key_code > 0) {
+                    key_stage = 0;
+                    key_val = !!ev.value;
+                    stime = get_tick();
+
+                    SendKeyEvent(cl, key_code, key_val);
                 }
             }
         }
@@ -584,21 +605,45 @@ static void* input_handler(void* pParam)
             }
         }
 
+        if ((key_code > 0) && (key_val > 0)) {
+            const int KEY_REPEAT_LONG = 500;
+            const int KEY_REPEAT_SHORT = 50;
+
+            switch (key_stage) {
+            case 0:
+                if ((get_tick() - stime) > KEY_REPEAT_LONG) {
+                    SendKeyEvent(cl, key_code, key_val);
+
+                    key_stage = 1;
+                    stime = get_tick();
+                }
+                break;
+            case 1:
+                if ((get_tick() - stime) > KEY_REPEAT_SHORT) {
+                    SendKeyEvent(cl, key_code, key_val);
+
+                    stime = get_tick();
+                }
+                break;
+            }
+        }
+
+        const int MOUSE_DELAY = 6000;
         if (evt.mouse.up) {
             send_tp_event_by_offset(0, -1);
-            usleep(3000);
+            usleep(MOUSE_DELAY);
         }
         if (evt.mouse.down) {
             send_tp_event_by_offset(0, 1);
-            usleep(3000);
+            usleep(MOUSE_DELAY);
         }
         if (evt.mouse.left) {
             send_tp_event_by_offset(-1, 0);
-            usleep(3000);
+            usleep(MOUSE_DELAY);
         }
         if (evt.mouse.right) {
             send_tp_event_by_offset(1, 0);
-            usleep(3000);
+            usleep(MOUSE_DELAY);
         }
 
         usleep(1000);
