@@ -104,6 +104,7 @@ typedef struct {
 
 typedef struct {
     int alt;
+    int ctrl;
     int shift;
     struct {
         int up;
@@ -270,21 +271,89 @@ static rfbKeySym key2rfbKeySym(int key, int val)
             return XK_bar;
         }
 
+        if (evt.ctrl) {
+            SendKeyEvent(cl, XK_Control_L, 0);
+            return XK_F1;
+        }
+
         return XK_KP_1;
     case KEY_2:
-        return evt.shift ? XK_at : XK_KP_2;
+        if (evt.shift) {
+            return XK_at;
+        }
+
+        if (evt.ctrl) {
+            SendKeyEvent(cl, XK_Control_L, 0);
+            return XK_F2;
+        }
+
+        return XK_KP_2;
     case KEY_3:
-        return evt.shift ? XK_numbersign : XK_KP_3;
+        if (evt.shift) {
+            return XK_numbersign;
+        }
+
+        if (evt.ctrl) {
+            SendKeyEvent(cl, XK_Control_L, 0);
+            return XK_F3;
+        }
+
+        return XK_KP_3;
     case KEY_4:
-        return evt.shift ? XK_dollar : XK_KP_4;
+        if (evt.shift) {
+            return XK_dollar;
+        }
+
+        if (evt.ctrl) {
+            SendKeyEvent(cl, XK_Control_L, 0);
+            return XK_F4;
+        }
+
+        return XK_KP_4;
     case KEY_5:
-        return evt.shift ? XK_percent : XK_KP_5;
+        if (evt.shift) {
+            return XK_percent;
+        }
+
+        if (evt.ctrl) {
+            SendKeyEvent(cl, XK_Control_L, 0);
+            return XK_F5;
+        }
+
+        return XK_KP_5;
     case KEY_6:
-        return evt.shift ? XK_asciicircum : XK_KP_6;
+        if (evt.shift) {
+            return XK_asciicircum;
+        }
+
+        if (evt.ctrl) {
+            SendKeyEvent(cl, XK_Control_L, 0);
+            return XK_F6;
+        }
+
+        return XK_KP_6;
     case KEY_7:
-        return evt.shift ? XK_ampersand : XK_KP_7;
+        if (evt.shift) {
+            return XK_ampersand;
+        }
+
+        if (evt.ctrl) {
+            SendKeyEvent(cl, XK_Control_L, 0);
+            return XK_F7;
+        }
+
+        return XK_KP_7;
     case KEY_8:
-        return evt.shift ? XK_asterisk : XK_KP_8;
+        if (evt.shift) {
+            return XK_asterisk;
+        }
+
+        if (evt.ctrl) {
+            SendKeyEvent(cl, XK_Control_L, 0);
+            return XK_F8;
+        }
+
+        return XK_KP_8;
     case KEY_9:
         if (evt.shift) {
             return XK_parenleft;
@@ -293,6 +362,11 @@ static rfbKeySym key2rfbKeySym(int key, int val)
         if (evt.alt) {
             SendKeyEvent(cl, XK_Alt_L, 0);
             return XK_braceleft;
+        }
+
+        if (evt.ctrl) {
+            SendKeyEvent(cl, XK_Control_L, 0);
+            return XK_F9;
         }
 
         return XK_KP_9;
@@ -304,6 +378,11 @@ static rfbKeySym key2rfbKeySym(int key, int val)
         if (evt.alt) {
             SendKeyEvent(cl, XK_Alt_L, 0);
             return XK_braceright;
+        }
+
+        if (evt.ctrl) {
+            SendKeyEvent(cl, XK_Control_L, 0);
+            return XK_F10;
         }
 
         return XK_KP_0;
@@ -513,6 +592,7 @@ static rfbKeySym key2rfbKeySym(int key, int val)
 
         return XK_slash;
     case KEY_LEFTSHIFT:
+        evt.ctrl = val;
         return XK_Control_L;
     case KEY_LEFTALT:
     case KEY_RIGHTALT:
