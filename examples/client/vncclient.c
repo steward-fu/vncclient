@@ -502,7 +502,7 @@ static rfbKeySym key2rfbKeySym(int key, int val)
     case KEY_RIGHT:
         if (evt.shift) {
             SendKeyEvent(cl, XK_Shift_L, 0);
-            return XK_Begin;
+            return XK_End;
         }
         if (evt.alt) {
             evt.mouse.right ^= 1;
@@ -514,7 +514,7 @@ static rfbKeySym key2rfbKeySym(int key, int val)
     case KEY_LEFT:
         if (evt.shift) {
             SendKeyEvent(cl, XK_Shift_L, 0);
-            return XK_End;
+            return XK_Home;
         }
         if (evt.alt) {
             evt.mouse.left ^= 1;
