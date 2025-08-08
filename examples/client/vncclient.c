@@ -403,18 +403,32 @@ static rfbKeySym key2rfbKeySym(int key, int val)
     case KEY_H:
         return evt.shift ? XK_H : XK_h;
     case KEY_I:
+        if (evt.alt && val) {
+            SendKeyEvent(cl, XK_Alt_L, 0);
+
+            SendPointerEvent(cl, tp[0].x, tp[0].y, rfbButton4Mask);
+            SendPointerEvent(cl, tp[0].x, tp[0].y, 0);
+            return 0;
+        }
         return evt.shift ? XK_I : XK_i;
     case KEY_J:
+        if (evt.alt && val) {
+            SendKeyEvent(cl, XK_Alt_L, 0);
+
+            evt.mouse.press ^= 1;
+            send_tp_event_by_offset(0, 0);
+            return 0;
+        }
         return evt.shift ? XK_J : XK_j;
     case KEY_K:
         if (evt.shift) {
             return XK_K;
         }
 
-        if (evt.alt && val) {
+        if (evt.alt) {
             SendKeyEvent(cl, XK_Alt_L, 0);
 
-            evt.mouse.press ^= 1;
+            evt.mouse.press = val;
             send_tp_event_by_offset(0, 0);
             return 0;
         }
@@ -431,6 +445,13 @@ static rfbKeySym key2rfbKeySym(int key, int val)
         }
         return XK_l;
     case KEY_M:
+        if (evt.alt && val) {
+            SendKeyEvent(cl, XK_Alt_L, 0);
+
+            SendPointerEvent(cl, tp[0].x, tp[0].y, rfbButton5Mask);
+            SendPointerEvent(cl, tp[0].x, tp[0].y, 0);
+            return 0;
+        }
         return evt.shift ? XK_M : XK_m;
     case KEY_N:
         return evt.shift ? XK_N : XK_n;
