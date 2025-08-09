@@ -544,8 +544,11 @@ static rfbKeySym key2rfbKeySym(int key, int val)
         }
 
         return XK_Left;
+    case KEY_CAMERA:
+        return XK_Print;
     case KEY_ENTER:
         if (evt.shift) {
+            SendKeyEvent(cl, XK_Shift_L, 0);
             return XK_Escape;
         }
 
