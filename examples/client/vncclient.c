@@ -403,8 +403,8 @@ static rfbKeySym key2rfbKeySym(int key, int val)
     case KEY_H:
         return evt.shift ? XK_H : XK_h;
     case KEY_I:
-        if (evt.alt && val) {
-            SendKeyEvent(cl, XK_Alt_L, 0);
+        if (evt.ctrl && val) {
+            SendKeyEvent(cl, XK_Control_L, 0);
 
             SendPointerEvent(cl, tp[0].x, tp[0].y, rfbButton4Mask);
             SendPointerEvent(cl, tp[0].x, tp[0].y, 0);
@@ -412,8 +412,8 @@ static rfbKeySym key2rfbKeySym(int key, int val)
         }
         return evt.shift ? XK_I : XK_i;
     case KEY_J:
-        if (evt.alt && val) {
-            SendKeyEvent(cl, XK_Alt_L, 0);
+        if (evt.ctrl && val) {
+            SendKeyEvent(cl, XK_Control_L, 0);
 
             evt.mouse.press ^= 1;
             send_tp_event_by_offset(0, 0);
@@ -425,8 +425,8 @@ static rfbKeySym key2rfbKeySym(int key, int val)
             return XK_K;
         }
 
-        if (evt.alt) {
-            SendKeyEvent(cl, XK_Alt_L, 0);
+        if (evt.ctrl) {
+            SendKeyEvent(cl, XK_Control_L, 0);
 
             evt.mouse.press = val;
             send_tp_event_by_offset(0, 0);
@@ -438,15 +438,15 @@ static rfbKeySym key2rfbKeySym(int key, int val)
             return XK_L;
         }
 
-        if (evt.alt) {
-            SendKeyEvent(cl, XK_Alt_L, 0);
+        if (evt.ctrl) {
+            SendKeyEvent(cl, XK_Control_L, 0);
             SendPointerEvent(cl, tp[0].x, tp[0].y, val ? rfbButton3Mask : 0);
             return 0;
         }
         return XK_l;
     case KEY_M:
-        if (evt.alt && val) {
-            SendKeyEvent(cl, XK_Alt_L, 0);
+        if (evt.ctrl && val) {
+            SendKeyEvent(cl, XK_Control_L, 0);
 
             SendPointerEvent(cl, tp[0].x, tp[0].y, rfbButton5Mask);
             SendPointerEvent(cl, tp[0].x, tp[0].y, 0);
@@ -498,48 +498,48 @@ static rfbKeySym key2rfbKeySym(int key, int val)
     case KEY_Z:
         return evt.shift ? XK_Z : XK_z;
     case KEY_UP:
-        if (evt.alt) {
+        if (evt.shift) {
             SendKeyEvent(cl, XK_Shift_L, 0);
             return XK_Page_Up;
         }
-        if (evt.shift) {
+        if (evt.ctrl) {
             evt.mouse.up ^= 1;
-            SendKeyEvent(cl, XK_Alt_L, 0);
+            SendKeyEvent(cl, XK_Control_L, 0);
             return 0;
         }
         return XK_Up;
     case KEY_DOWN:
-        if (evt.alt) {
+        if (evt.shift) {
             SendKeyEvent(cl, XK_Shift_L, 0);
             return XK_Page_Down;
 
         }
-        if (evt.shift) {
+        if (evt.ctrl) {
             evt.mouse.down ^= 1;
-            SendKeyEvent(cl, XK_Alt_L, 0);
+            SendKeyEvent(cl, XK_Control_L, 0);
             return 0;
         }
         return XK_Down;
     case KEY_RIGHT:
-        if (evt.alt) {
+        if (evt.shift) {
             SendKeyEvent(cl, XK_Shift_L, 0);
             return XK_End;
         }
-        if (evt.shift) {
+        if (evt.ctrl) {
             evt.mouse.right ^= 1;
-            SendKeyEvent(cl, XK_Alt_L, 0);
+            SendKeyEvent(cl, XK_Control_L, 0);
             return 0;
         }
 
         return XK_Right;
     case KEY_LEFT:
-        if (evt.alt) {
+        if (evt.shift) {
             SendKeyEvent(cl, XK_Shift_L, 0);
             return XK_Home;
         }
-        if (evt.shift) {
+        if (evt.ctrl) {
             evt.mouse.left ^= 1;
-            SendKeyEvent(cl, XK_Alt_L, 0);
+            SendKeyEvent(cl, XK_Control_L, 0);
             return 0;
         }
 
