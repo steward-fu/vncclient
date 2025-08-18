@@ -498,8 +498,9 @@ static rfbKeySym key2rfbKeySym(int key, int val)
     case KEY_Z:
         return evt.shift ? XK_Z : XK_z;
     case KEY_UP:
-        if (evt.shift) {
+        if (evt.ctrl && evt.shift) {
             SendKeyEvent(cl, XK_Shift_L, 0);
+            SendKeyEvent(cl, XK_Control_L, 0);
             return XK_Page_Up;
         }
         if (evt.ctrl) {
@@ -509,8 +510,9 @@ static rfbKeySym key2rfbKeySym(int key, int val)
         }
         return XK_Up;
     case KEY_DOWN:
-        if (evt.shift) {
+        if (evt.ctrl && evt.shift) {
             SendKeyEvent(cl, XK_Shift_L, 0);
+            SendKeyEvent(cl, XK_Control_L, 0);
             return XK_Page_Down;
 
         }
@@ -521,8 +523,9 @@ static rfbKeySym key2rfbKeySym(int key, int val)
         }
         return XK_Down;
     case KEY_RIGHT:
-        if (evt.shift) {
+        if (evt.ctrl && evt.shift) {
             SendKeyEvent(cl, XK_Shift_L, 0);
+            SendKeyEvent(cl, XK_Control_L, 0);
             return XK_End;
         }
         if (evt.ctrl) {
@@ -533,8 +536,9 @@ static rfbKeySym key2rfbKeySym(int key, int val)
 
         return XK_Right;
     case KEY_LEFT:
-        if (evt.shift) {
+        if (evt.ctrl && evt.shift) {
             SendKeyEvent(cl, XK_Shift_L, 0);
+            SendKeyEvent(cl, XK_Control_L, 0);
             return XK_Home;
         }
         if (evt.ctrl) {
