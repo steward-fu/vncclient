@@ -989,8 +989,8 @@ int main(int argc, char *argv[])
 
     debug("%s\n", __func__);
 
-    if (argc != 2) {
-        printf("Usage:\n  %s ip:port\n", argv[0]);
+    if (argc != 3) {
+        printf("Usage:\n  %s pixel|blur ip:port\n", argv[0]);
         return -1;
     }
 
@@ -998,6 +998,9 @@ int main(int argc, char *argv[])
     egl_create();
 
     filter = FILTER_PIXEL;
+    if (!strcmp(argv[1], "blur")) {
+        filter = FILTER_BLUR;
+    }
     memset(wl.data, 0, wl.info.size * sizeof(uint32_t));
     wl.pixels[0] = (uint32_t *)wl.data;
     wl.pixels[1] = (uint32_t *)(wl.data + wl.info.size);
