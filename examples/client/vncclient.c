@@ -24,10 +24,20 @@
 
 #define DEBUG       0
 #define MAX_FB      2
+
+#if defined(XT894) || defined(XT897)
 #define LCD_W       540
 #define LCD_H       960
 #define SCREEN_W    960
 #define SCREEN_H    540
+#endif
+
+#if defined(QX1000)
+#define LCD_W       1080
+#define LCD_H       2160
+#define SCREEN_W    2160
+#define SCREEN_H    1080
+#endif
 
 #if defined(XT894)
 #define TP_PATH     "/dev/input/event4"
@@ -37,6 +47,11 @@
 #if defined(XT897)
 #define TP_PATH     "/dev/input/event7"
 #define KEY_PATH    "/dev/input/event1"
+#endif
+
+#if defined(QX1000)
+#define TP_PATH     "/dev/input/event1"
+#define KEY_PATH    "/dev/input/event3"
 #endif
 
 #if DEBUG
@@ -550,6 +565,8 @@ static rfbKeySym key2rfbKeySym(int key, int val)
         return XK_Left;
     case KEY_CAMERA:
         return XK_Print;
+    case KEY_ESC:
+        return XK_Escape;
     case KEY_ENTER:
         if (evt.shift) {
             SendKeyEvent(cl, XK_Shift_L, 0);
@@ -566,6 +583,8 @@ static rfbKeySym key2rfbKeySym(int key, int val)
         return XK_BackSpace;
     case KEY_TAB:
         return XK_Tab;
+
+#if defined(XT894) || defined(XT897)
     case KEY_COMMA:
         if (evt.shift) {
             return XK_semicolon;
@@ -578,7 +597,14 @@ static rfbKeySym key2rfbKeySym(int key, int val)
         }
 
         return XK_comma;
+#endif
 
+#if defined(QX1000)
+    case KEY_COMMA:
+        return XK_comma;
+#endif
+
+#if defined(XT894) || defined(XT897)
     case KEY_DOT:
         if (evt.shift) {
             return XK_colon;
@@ -590,11 +616,28 @@ static rfbKeySym key2rfbKeySym(int key, int val)
         }
 
         return XK_period;
+#endif
+
+#if defined(QX1000)
+    case KEY_DOT:
+        return XK_period;
+
+    case KEY_LEFTMETA:
+        return 0;
+#endif
 
     case KEY_SPACE:
         return XK_space;
+#if defined(XT894) || defined(XT897)
     case KEY_GRAVE:
         return evt.shift ? XK_quotedbl : XK_apostrophe;
+#endif
+#if defined(QX1000)
+    case KEY_GRAVE:
+        return XK_grave;
+    case KEY_SEMICOLON:
+        return XK_semicolon;
+#endif
     case KEY_MINUS:
         if (evt.shift) {
             return XK_underscore;
@@ -620,15 +663,39 @@ static rfbKeySym key2rfbKeySym(int key, int val)
 
         return XK_slash;
     case KEY_LEFTSHIFT:
+#if defined(QX1000)
+    case KEY_LEFTCTRL:
+#endif
         evt.ctrl = val;
         return XK_Control_L;
     case KEY_LEFTALT:
     case KEY_RIGHTALT:
         evt.alt = val;
         return XK_Alt_L;
+#if defined(XT894) || defined(XT897)
     case KEY_LEFTCTRL:
+#endif
+
+#if defined(QX1000)
     case KEY_CAPSLOCK:
+        return XK_Caps_Lock;
+    case KEY_BACKSLASH:
+        return XK_backslash;
+    case KEY_APOSTROPHE:
+        return XK_apostrophe;
+    case KEY_LEFTBRACE:
+        return XK_braceleft;
+    case KEY_RIGHTBRACE:
+        return XK_braceright;
+#endif
+
+#if defined(XT894) || defined(XT897)
+    case KEY_CAPSLOCK:
+#endif
     case KEY_RIGHTCTRL:
+#if defined(QX1000)
+    case KEY_RIGHTSHIFT:
+#endif
         evt.shift = val;
         return XK_Shift_L;
     }
@@ -639,6 +706,16 @@ static rfbKeySym key2rfbKeySym(int key, int val)
 static void* input_handler(void* pParam)
 {
     uint32_t stime = 0;
+
+#if defined(XT894) || defined(XT897)
+    float MAX_H = 1000.0
+    float MAX_W = 1000.0
+#endif
+
+#if defined(QX1000)
+    float MAX_H = (float)SCREEN_H;
+    float MAX_W = (float)SCREEN_W;
+#endif
 
     int tp_id = 0;
     int tp_valid = 0;
@@ -685,26 +762,71 @@ static void* input_handler(void* pParam)
         }
 
         if (read(fd[1], &ev, sizeof(struct input_event)) > 0) {
-            debug("Touch, code:%d, value:%d\n", ev.code, ev.value);
+            debug("Touch, type:%d, code:%d, value:%d\n", ev.type, ev.code, ev.value);
 
             if (ev.type == EV_ABS) {
                 if (ev.code == ABS_MT_TRACKING_ID) {
+#if defined(XT894) || defined(XT897)
                     tp_valid = 1;
                     tp_id = ev.value;
+#endif
+
+#if defined(QX1000)
+                    if (ev.value > 0) {
+                        tp_valid = 1;
+                        tp_id = 0;
+                    }
+                    else if (ev.value == -1) {
+                        if (tp_valid) {
+                            tp_valid = 0;
+                            SendPointerEvent(cl, tp[0].x, tp[0].y, !evt.alt ? rfbButton1Mask : 0);
+
+                            debug(
+                                "Touch ID=%d, X=%d, Y=%d, Pressure=%d\n",
+                                tp_id,
+                                tp[tp_id].x,
+                                tp[tp_id].y,
+                                tp[tp_id].pressure
+                            );
+
+                            evt.mouse.press = 0;
+                            SendPointerEvent(cl, tp[0].x, tp[0].y, 0);
+                        }
+                    }
+#endif
                 }
                 else if (ev.code == ABS_MT_POSITION_X) {
                     tp_valid = 1;
-                    tp[tp_id].y = SCREEN_H - (((float)ev.value / 1000.0) * SCREEN_H);
+                    tp[tp_id].y = SCREEN_H - (((float)ev.value / MAX_H) * SCREEN_H);
                 }
                 else if (ev.code == ABS_MT_POSITION_Y) {
                     tp_valid = 1;
-                    tp[tp_id].x = ((float)ev.value / 1000.0) * SCREEN_W;
+                    tp[tp_id].x = ((float)ev.value / MAX_W) * SCREEN_W;
                 }
                 else if (ev.code == ABS_MT_PRESSURE) {
                     tp_valid = 1;
                     tp[tp_id].pressure = ev.value;
                 }
             }
+#if defined(QX1000)
+            else if (ev.type == EV_SYN) {
+                if ((ev.code == 0) && (ev.value == 0)) {
+                    if (tp_valid) {
+                        SendPointerEvent(cl, tp[0].x, tp[0].y, !evt.alt ? rfbButton1Mask : 0);
+
+                        debug(
+                            "Touch ID=%d, X=%d, Y=%d, Pressure=%d\n",
+                            tp_id,
+                            tp[tp_id].x,
+                            tp[tp_id].y,
+                            tp[tp_id].pressure
+                        );
+                    }
+                }
+            }
+#endif
+
+#if defined(XT894) || defined(XT897)
             else if (ev.type == EV_SYN) {
                 if ((ev.code == ABS_Z) && (ev.value == 0)) {
                     if (tp_valid) {
@@ -725,6 +847,7 @@ static void* input_handler(void* pParam)
                     }
                 }
             }
+#endif
         }
 
         if ((key_code > 0) && (key_val > 0)) {
