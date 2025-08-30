@@ -601,7 +601,7 @@ static rfbKeySym key2rfbKeySym(int key, int val)
 
 #if defined(QX1000)
     case KEY_COMMA:
-        return XK_comma;
+        return evt.shift ? XK_less : XK_comma;
 #endif
 
 #if defined(XT894) || defined(XT897)
@@ -619,8 +619,11 @@ static rfbKeySym key2rfbKeySym(int key, int val)
 #endif
 
 #if defined(QX1000)
+    case KEY_DELETE:
+        return XK_Delete;
+
     case KEY_DOT:
-        return XK_period;
+        return evt.shift ? XK_greater : XK_period;
 
     case KEY_LEFTMETA:
         return 0;
@@ -634,8 +637,11 @@ static rfbKeySym key2rfbKeySym(int key, int val)
 #endif
 #if defined(QX1000)
     case KEY_GRAVE:
-        return XK_grave;
+        return evt.shift ? XK_asciitilde : XK_grave;
     case KEY_SEMICOLON:
+        if (evt.shift) {
+            return XK_colon;
+        }
         return XK_semicolon;
 #endif
     case KEY_MINUS:
@@ -680,13 +686,13 @@ static rfbKeySym key2rfbKeySym(int key, int val)
     case KEY_CAPSLOCK:
         return XK_Caps_Lock;
     case KEY_BACKSLASH:
-        return XK_backslash;
+        return evt.shift ? XK_bar : XK_backslash;
     case KEY_APOSTROPHE:
-        return XK_apostrophe;
+        return evt.shift ? XK_quotedbl : XK_apostrophe;
     case KEY_LEFTBRACE:
-        return XK_braceleft;
+        return evt.shift ? XK_braceleft : XK_bracketleft;
     case KEY_RIGHTBRACE:
-        return XK_braceright;
+        return evt.shift ? XK_braceright : XK_bracketright;
 #endif
 
 #if defined(XT894) || defined(XT897)
