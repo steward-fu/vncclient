@@ -1042,7 +1042,7 @@ int main(int argc, char *argv[])
 
     debug("running...\n");
     while (1) {
-        r = WaitForMessage(cl, 500);
+        r = WaitForMessage(cl, 5000);
         if (r < 0) {
             break;
         }
