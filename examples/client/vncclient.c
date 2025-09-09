@@ -37,6 +37,7 @@
 #if defined(XT897)
 #define TP_PATH     "/dev/input/event7"
 #define KEY_PATH    "/dev/input/event1"
+#define PWR_PATH    "/dev/input/event3"
 #endif
 
 #if DEBUG
@@ -115,6 +116,7 @@ typedef struct {
     } mouse;
 } myevent;
 
+static int running = 0;
 static myevent evt = { 0 };
 static wayland wl = { 0 };
 static rfbClient *cl = NULL;
@@ -644,10 +646,11 @@ static void* input_handler(void* pParam)
     int key_val = 0;
     int key_code = 0;
     int key_stage = 0;
-    int fd[2] = { -1, -1 };
+    int fd[3] = { -1, -1, -1 };
     struct input_event ev = { 0 };
     const char *tp_path = TP_PATH;
     const char *key_path = KEY_PATH;
+    const char *pwr_path = PWR_PATH;
 
     debug("%s++\n", __func__);
 
@@ -663,8 +666,15 @@ static void* input_handler(void* pParam)
         return NULL;
     }
 
+    fd[2] = open(pwr_path, O_RDONLY);
+    if (fd[2] < 0) {
+        debug("%s, failed to open %s\n", __func__, pwr_path);
+        return NULL;
+    }
+
     fcntl(fd[0], F_SETFL, O_NONBLOCK);
     fcntl(fd[1], F_SETFL, O_NONBLOCK);
+    fcntl(fd[2], F_SETFL, O_NONBLOCK);
 
     stime = get_tick();
     while (wl.thread.running) {
@@ -725,6 +735,19 @@ static void* input_handler(void* pParam)
                 }
             }
         }
+
+        if (read(fd[2], &ev, sizeof(struct input_event)) > 0) {
+            debug("Pwr, code:%d, value:%d\n", ev.code, ev.value);
+
+            if (ev.type == EV_KEY) {
+                if (ev.code == KEY_POWER) {
+                    debug("shutdown by power key\n");
+                    running = 0;
+                    exit(-1);
+                }
+            }
+        }
+
 
         if ((key_code > 0) && (key_val > 0)) {
             const int KEY_REPEAT_LONG = 500;
@@ -1040,9 +1063,10 @@ int main(int argc, char *argv[])
         return -1;
     }
 
+    running = 1;
     debug("running...\n");
-    while (1) {
-        r = WaitForMessage(cl, 5000);
+    while (running) {
+        r = WaitForMessage(cl, 1000);
         if (r < 0) {
             break;
         }
@@ -1055,9 +1079,35 @@ int main(int argc, char *argv[])
 
         if (wl.ready && wl.flip) {
             wl.flip = 0;
-            glVertexAttribPointer(wl.egl.pos, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), fb_vertices);
-            glVertexAttribPointer(wl.egl.coord, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), &fb_vertices[3]);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, SCREEN_W, SCREEN_H, 0, GL_RGBA, GL_UNSIGNED_BYTE, wl.pixels[0]);
+            glVertexAttribPointer(
+                wl.egl.pos,
+                3,
+                GL_FLOAT,
+                GL_FALSE,
+                5 * sizeof(GLfloat), fb_vertices
+            );
+
+            glVertexAttribPointer(
+                wl.egl.coord,
+                2,
+                GL_FLOAT,
+                GL_FALSE,
+                5 * sizeof(GLfloat),
+                &fb_vertices[3]
+            );
+
+            glTexImage2D(
+                GL_TEXTURE_2D,
+                0,
+                GL_RGBA,
+                SCREEN_W,
+                SCREEN_H,
+                0,
+                GL_RGBA,
+                GL_UNSIGNED_BYTE,
+                wl.pixels[0]
+            );
+
             glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
             eglSwapBuffers(wl.egl.display, wl.egl.surface);
         }
