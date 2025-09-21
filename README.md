@@ -83,7 +83,7 @@ $ vncclient 127.0.0.1:5901
 ![image](image/bookworm.jpg)
 
 ## Keyboard
-| XT897 | Key in Debian 12 |
+| XT897 | Debian 12 |
 | ---- | ---- |
 | OK | SHIFT |
 | SYM | ALT |
@@ -118,7 +118,7 @@ $ vncclient 127.0.0.1:5901
 | SHIFT + Enter | Escape |
 
 ## Mouse
-| XT897 | Key in Debian 12 |
+| XT897 | Debian 12 |
 | ---- | ---- |
 | Touch | Mouse X/Y with Click |
 | ATL + Touch | Mouse X/Y without Click |
