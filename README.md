@@ -115,6 +115,7 @@ $ vncclient 127.0.0.1:5901
 | CTRL + SHIFT + Right | End |
 | Camera | PrintScreen |
 | ALT + Enter | PrintScreen |
+| SHIFT + Enter | Escape |
 
 ## Mouse
 | XT897 | Key in Debian 12 |
