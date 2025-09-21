@@ -1,4 +1,4 @@
-## VNC client for XT897 smartphone on SailfishOS
+# VNC client for XT897 smartphone on SailfishOS
 You can now run Debian 12 on the XT897 smartphone using a chroot environment with a VNC server, and access it through a VNC client running on SailfishOS.  
 
 ## Introduction
