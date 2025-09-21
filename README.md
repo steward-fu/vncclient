@@ -81,3 +81,52 @@ $ sudo debian start
 $ vncclient 127.0.0.1:5901
 ```
 ![image](image/bookworm.jpg)
+
+## Keyboard
+| XT897 | Key in Debian |
+| ---- | ---- |
+| OK | SHIFT |
+| SYM | ALT |
+| shift | CTRL |
+| caps lock | SHIFT |
+| CTRL + 1 | F1 |
+| CTRL + 2 | F2 |
+| CTRL + 3 | F3 |
+| CTRL + 4 | F4 |
+| CTRL + 5 | F5 |
+| CTRL + 6 | F6 |
+| CTRL + 7 | F7 |
+| CTRL + 8 | F8 |
+| CTRL + 9 | F9 |
+| CTRL + 0 | F10 |
+| ALT + 1 | | |
+| ALT + ' | ` |
+| ALT + 9 | { |
+| ALT + 0 | } |
+| ALT + O | [ |
+| ALT + P | ] |
+| ALT + , | < |
+| ALT + . | > |
+| ALT + / | \ |
+| ALT + - | ~ |
+| CTRL + SHIFT + Up | PageUp |
+| CTRL + SHIFT + Down | PageDown |
+| CTRL + SHIFT + Left | Home |
+| CTRL + SHIFT + Right | End |
+| Camera | PrintScreen |
+| ALT + Enter | PrintScreen |
+
+## Mouse
+| XT897 | Key in Debian |
+| ---- | ---- |
+| Touch | Mouse X/Y with Click |
+| ATL + Touch | Mouse X/Y without Click |
+| CTRL + Up | Mouse Y-- |
+| CTRL + Down | Mouse Y++ |
+| CTRL + Left | Mouse X-- |
+| CTRL + Right | Mouse X++ |
+| CTRL + I | Mouse Wheel-- |
+| CTRL + M | Mouse Wheel++ |
+| CTRL + L | Mouse RightButton |
+| CTRL + K | Mouse LeftButton |
+| CTRL + J | Mouse LeftButton with Toggle |
