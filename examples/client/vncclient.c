@@ -32,6 +32,7 @@
 #if defined(XT894)
 #define TP_PATH     "/dev/input/event4"
 #define KEY_PATH    "/dev/input/event3"
+#define PWR_PATH    "/dev/input/event2"
 #endif
 
 #if defined(XT897)
@@ -181,8 +182,13 @@ static const char *frag_shader_code =
     "    float aCos = cos(frag_angle);                                  \n"
     "    vec2 tc = frag_coord;                                          \n"
     "    mat2 rotMat = mat2(aCos, -aSin, aSin, aCos);                   \n"
+#if defined(XT894)
+    "    mat2 scaleMat = mat2(frag_aspect, 0.001, 0.0, 1.0);            \n"
+    "    mat2 scaleMatInv = mat2(1.0 / frag_aspect, 0.0, 0.0015, 1.0);  \n"
+#else
     "    mat2 scaleMat = mat2(frag_aspect, 0.0, 0.0, 1.0);              \n"
     "    mat2 scaleMatInv = mat2(1.0 / frag_aspect, 0.0, 0.0, 1.0);     \n"
+#endif
     "    tc -= HALF.xy;                                                 \n"
     "    tc = scaleMatInv * rotMat * scaleMat * tc;                     \n"
     "    tc += HALF.xy;                                                 \n"
@@ -629,6 +635,7 @@ static rfbKeySym key2rfbKeySym(int key, int val)
         evt.alt = val;
         return XK_Alt_L;
     case KEY_LEFTCTRL:
+    case KEY_RIGHTCTRL:
     case KEY_CAPSLOCK:
         evt.shift = val;
         return XK_Shift_L;
