@@ -635,6 +635,7 @@ static rfbKeySym key2rfbKeySym(int key, int val)
         evt.alt = val;
         return XK_Alt_L;
     case KEY_LEFTCTRL:
+    case KEY_RIGHTCTRL:
     case KEY_CAPSLOCK:
         evt.shift = val;
         return XK_Shift_L;
