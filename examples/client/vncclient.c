@@ -602,6 +602,7 @@ static rfbKeySym key2rfbKeySym(int key, int val)
     case KEY_SPACE:
         return XK_space;
     case KEY_GRAVE:
+    case KEY_APOSTROPHE:
         return evt.shift ? XK_quotedbl : XK_apostrophe;
     case KEY_MINUS:
         if (evt.shift) {
