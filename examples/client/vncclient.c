@@ -168,7 +168,7 @@ static const char *vert_shader_code =
     "}                                                                  \n";
 
 static const char *frag_shader_code =
-    "precision mediump float;                                           \n"
+    "precision highp float;                                             \n"
     "varying vec2 frag_coord;                                           \n"
     "uniform int frag_swap_color;                                       \n"
     "uniform float frag_aspect;                                         \n"
@@ -182,13 +182,8 @@ static const char *frag_shader_code =
     "    float aCos = cos(frag_angle);                                  \n"
     "    vec2 tc = frag_coord;                                          \n"
     "    mat2 rotMat = mat2(aCos, -aSin, aSin, aCos);                   \n"
-#if defined(XT894)
-    "    mat2 scaleMat = mat2(frag_aspect, 0.001, 0.0, 1.0);            \n"
-    "    mat2 scaleMatInv = mat2(1.0 / frag_aspect, 0.0, 0.0015, 1.0);  \n"
-#else
     "    mat2 scaleMat = mat2(frag_aspect, 0.0, 0.0, 1.0);              \n"
     "    mat2 scaleMatInv = mat2(1.0 / frag_aspect, 0.0, 0.0, 1.0);     \n"
-#endif
     "    tc -= HALF.xy;                                                 \n"
     "    tc = scaleMatInv * rotMat * scaleMat * tc;                     \n"
     "    tc += HALF.xy;                                                 \n"
