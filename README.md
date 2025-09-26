@@ -1,8 +1,8 @@
-# VCN Client Ported for SailfishOS
+# VNC client ported to SailfishOS
 You can now run Debian 12 on the XT897/XT894 smartphone using a chroot environment with a VNC server, and access it through a VNC client running on SailfishOS.  
 
 ## Introduction
-Due to the lack of mainstream kernel support for the XT897/XT894 smartphone, the SailfishOS container cannot run properly on this device. To work around this limitation and run Debian 12 (Bookworm) on the XT897/XT894, I use a chroot environment with a VNC server. However, the default VNC client available on SailfishOS did not meet my requirements. As a result, I ported a VNC client based on the LibVNC example specifically for the XT897/XT894 and added additional features, such as keyboard and mouse support. This repository is specifically designed for the XT897/XT894 smartphone and has only been tested with SailfishOS version 4.4.0.68/5.0.0.67. On SailfishOS, the VNC client's rendering is handled by a Wayland client utilizing OpenGL ES 2.0, with the display resolution fixed at 960×540.
+Due to the lack of mainstream kernel support for the Motorola XT897/XT894 smartphones, SailfishOS containers cannot run properly on these devices. To work around this limitation and enable the use of Debian 12 (Bookworm), I utilize a chroot environment combined with a VNC server. However, the default VNC client available on SailfishOS did not meet the specific requirements for this setup. To address this, I ported a VNC client based on the LibVNC example, tailored specifically for the XT897/XT894. Additional features were implemented, including full keyboard and mouse input support. This repository is intended exclusively for use on the XT897/XT894 and has only been tested with SailfishOS versions 4.4.0.68 and 5.0.0.67. On SailfishOS, rendering is handled by a Wayland client using OpenGL ES 2.0, with a fixed display resolution of 960×540.
 
 ## Preparing Debian 12 (PC)
 ```
