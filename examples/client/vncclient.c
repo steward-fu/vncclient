@@ -894,6 +894,7 @@ static void* input_handler(void* pParam)
     }
     close(fd[0]);
     close(fd[1]);
+    close(fd[2]);
 
     debug("%s--\n", __func__);
     return NULL;
